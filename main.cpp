@@ -93,10 +93,10 @@ private:
 };
 #endif  // CV_CXX11
 
+
 int main()
 {
-
-	string model_path = "./models";
+	string model_path = "../models";
 	FaceTracking faceTrack(model_path);
 	cv::Mat frame;
 	cv::VideoCapture cap(0);

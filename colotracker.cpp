@@ -71,7 +71,7 @@ void ColorTracker::ncc_filter(cv::Mat frame1, cv::Mat frame2, Point2f *prev_feat
 	sort(ncc_err.begin(), ncc_err.end());
 	//使用ncnn计算的互相关进行验证，过滤掉bounding box中质量最差的点的50%
 	median = (ncc_err[filt]+ncc_err[filt-1])/2.;
-	cout<<"median"<<median<<endl;
+	std::cout<<"median"<<median<<endl;
 	for(int i = 0; i < npoin; i++) 
 	{
 		
@@ -100,8 +100,8 @@ const Point2f* curr_feat, int *fb_pass, const int npoin)
 	 * This function implements forward-backward error filtering
 	*/
 	//vector<double> euclidean_dist (npoin,0.0);
-	double euclidean_dist[npoin];
-	double err_copy[npoin];
+	double* euclidean_dist = new double[npoin];
+	double *err_copy = new double[npoin];
 
 	memcpy(err_copy,euclidean_dist,sizeof(euclidean_dist));
 	
@@ -132,6 +132,8 @@ const Point2f* curr_feat, int *fb_pass, const int npoin)
 			fb_pass[i] = 0;
 		}
 	}
+	delete[] euclidean_dist;
+	delete[] err_copy;
 }
 
 
@@ -144,8 +146,8 @@ void ColorTracker::bbox_move(const Point2f* prev_feat, const Point2f* curr_feat,
 	//计算的是x方向和y方向上的平均偏移量
 	//vector<double> xvec (npoin,0.0);
 	//vector<double> yvec (npoin,0.0);
-	double xvec[npoin];
-	double yvec[npoin];
+	double *xvec = new double[npoin];
+	double *yvec = new double[npoin];
 	for (int i = 0; i < npoin; i++) 
 	{
 		xvec[i] = curr_feat[i].x - prev_feat[i].x;
@@ -158,6 +160,8 @@ void ColorTracker::bbox_move(const Point2f* prev_feat, const Point2f* curr_feat,
 	
 	xmean = xvec[npoin/2];
 	ymean = yvec[npoin/2];		//The final mostion is that of the mean of all the points. 
+	delete[] xvec;
+	delete[] yvec;
 }
 
 
@@ -193,9 +197,9 @@ cv::Rect ColorTracker::track(cv::Mat & img,cv::Mat before,double x1, double y1, 
 		// The i-th element of this array will be non-zero if and only if the i-th feature of
 	 	// frame 1 was found in frame 2.
 	 
-		char optical_flow_found_feature[npoints];    		//features in first frame
-		char optical_flow_found_feature2[npoints];			//features in second frame
-		float optical_flow_feature_error[npoints];			//error in Optical Flow 
+		std::vector<char> optical_flow_found_feature(npoints);    		//features in first frame
+		std::vector<char> optical_flow_found_feature2(npoints);			//features in second frame
+		std::vector<char> optical_flow_feature_error(npoints);			//error in Optical Flow 
 		vector<int> fb_pass(npoints);						//Points that passed fb
 		vector<int> ncc_pass(npoints);						//Points that passed ncc
 
@@ -216,7 +220,7 @@ cv::Rect ColorTracker::track(cv::Mat & img,cv::Mat before,double x1, double y1, 
 		vector<uchar> status;
         vector<float> err;
 
-		calcOpticalFlowPyrLK(frame1_1C, frame2_1C, frame1_features, frame2_features, status,err,Size(7,7),3, termcrit, 0, 0.001);
+		cv::calcOpticalFlowPyrLK(frame1_1C, frame2_1C, frame1_features, frame2_features, status,err,Size(7,7),3, termcrit, 0, 0.001);
 		//calcOpticalFlowPyrLK(frame2_1C, frame1_1C, frame2_features, FB_features,     status,err,Size(7,7),3, termcrit, 0, 0.001);
 		
 
@@ -329,7 +333,7 @@ cv::Rect ColorTracker::track(cv::Mat & img,cv::Mat before,double x1, double y1, 
 		track_box.width 	=track_box.width*Scale;
 		track_box.height 	=track_box.height*Scale;
 
-		cout<<"track_box="<<track_box<<endl;
+		std::cout<<"track_box="<<track_box<<endl;
 
         return track_box;
 		

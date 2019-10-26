@@ -5,7 +5,7 @@
 #include "mtcnn.h"
 #include "time.h"
 #include "colotracker.h"
-
+#include "memory"
 
 cv::Rect boundingRect(const std::vector<cv::Point>& pts) {
 	if (pts.size() > 1)

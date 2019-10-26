@@ -2,7 +2,7 @@
 基于mtcnn人脸检测+onet人脸跟踪（光流跟踪）
 
 #开发环境
-ncnn ubuntu18.04 opencv4.01
+ncnn Windows opencv342
 
 
 #开源框架
@@ -21,7 +21,12 @@ https://github.com/qaz734913414/Ncnn_FaceTrack
 4、cmake ..
 5、make -j4
 
-注意：运行的时候出现错误了，可能是模型路径不对。
+注意：
+1:运行的时候出现错误了，可能是模型路径不对。
+2:windows 下测试需要加入opencv的动态依赖库
+3：测试了一下，跟踪ID还是比较容易丢的；
+
+
 
 
 Todo：
